@@ -16,7 +16,5 @@ provider:
 functions:
   hello:
     handler: handler.hello
-    events:
-      - httpApi:
-          path: /
-          method: get
+    url:
+      authorizer: 'aws_iam'
