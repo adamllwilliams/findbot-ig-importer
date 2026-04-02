@@ -8,6 +8,7 @@ service: findbot-ig-importer
 provider:
   name: aws
   runtime: nodejs20.x
+  region: eu-west-2
   # Uncomment to easily set up a custom domain. Read the docs for more details:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
