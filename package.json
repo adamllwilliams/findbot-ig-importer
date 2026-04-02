@@ -1,0 +1,20 @@
+{
+  "name": "findbot-ig-importer",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/adamllwilliams/findbot-ig-importer#readme",
+  "bugs": {
+    "url": "https://github.com/adamllwilliams/findbot-ig-importer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamllwilliams/findbot-ig-importer.git"
+  },
+  "license": "ISC",
+  "author": "adamllwilliams",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
