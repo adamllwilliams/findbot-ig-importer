@@ -7,7 +7,7 @@ exports.hello = async (event) => {
       }
     }
   );
-  const data = await res.json();
+  const data = await res.text();
 
   return {
     statusCode: 200,
