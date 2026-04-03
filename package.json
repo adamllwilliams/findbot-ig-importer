@@ -19,7 +19,8 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.161",
-    "@types/node": "^25.5.0",
+    "@types/node": "^20.19.38",
+    "serverless-plugin-typescript": "^2.1.5",
     "typescript": "^6.0.2"
   }
 }
