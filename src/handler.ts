@@ -7,13 +7,14 @@ exports.hello = async (event) => {
       }
     }
   );
+  const data = await res.json();
 
   return {
     statusCode: 200,
     body: JSON.stringify({
       message: "Go Serverless v4! Your function executed successfully!",
       url: event.queryStringParameters?.url,
-      res: res,
+      res: data,
     }),
   };
 };
