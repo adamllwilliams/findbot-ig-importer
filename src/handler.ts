@@ -1,3 +1,5 @@
+import { GoogleGenAI } from '@google/genai';
+
 exports.hello = async (event) => {
   // SCRAPE
   const res = await fetch(
@@ -23,12 +25,22 @@ exports.hello = async (event) => {
   const buffer = await imageRes.arrayBuffer();
   const base64 = Buffer.from(buffer).toString('base64');
 
+  // GEMINI
+  const ai = new GoogleGenAI({
+    apiKey: process.env['GEMINI_API_KEY'],
+  });
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: "Explain how AI works in a few words",
+  });
+
   return {
     statusCode: 200,
     body: JSON.stringify({
       message: "Go Serverless v4! Your function executed successfully!",
       displayUrl: displayUrl,
       caption: caption,
+      responseText: response.text,
     }),
   };
 };

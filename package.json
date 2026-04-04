@@ -21,5 +21,8 @@
     "@types/aws-lambda": "^8.10.161",
     "@types/node": "^20.19.38",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@google/genai": "^1.48.0"
   }
 }
