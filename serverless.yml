@@ -7,7 +7,7 @@ service: findbot-ig-importer
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs24.x
   region: eu-west-2
   environment:
     APIFY_TOKEN: ${env:APIFY_TOKEN}
