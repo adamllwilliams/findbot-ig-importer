@@ -1,5 +1,3 @@
-import { ApifyClient } from 'apify-client';
-
 exports.hello = async (event) => {
   // SCRAPE
   const res = await fetch(
