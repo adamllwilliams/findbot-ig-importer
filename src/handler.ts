@@ -73,13 +73,15 @@ exports.hello = async (event) => {
     contents,
   });
 
+  const eventData = JSON.parse(response.text);
+
   return {
     statusCode: 200,
     body: JSON.stringify({
       message: "Go Serverless v4! Your function executed successfully!",
       displayUrl: displayUrl,
       caption: caption,
-      eventData: response.text,
+      eventData: eventData,
     }),
   };
 };
