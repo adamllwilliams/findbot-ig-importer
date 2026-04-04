@@ -22,5 +22,8 @@
     "@types/node": "^20.19.38",
     "serverless-plugin-typescript": "^2.1.5",
     "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0"
   }
 }

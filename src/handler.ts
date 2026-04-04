@@ -1,3 +1,5 @@
+import * as cheerio from 'cheerio';
+
 exports.hello = async (event) => {
   const res = await fetch(
     event.queryStringParameters?.url,
@@ -7,14 +9,19 @@ exports.hello = async (event) => {
       }
     }
   );
-  const data = await res.text();
+  const html = await res.text();
+
+  const $ = cheerio.load(html);
+  const imageSrc = $('.EmbeddedMediaImage').attr('src');
+  const caption = $('.Caption').text().trim();
 
   return {
     statusCode: 200,
     body: JSON.stringify({
       message: "Go Serverless v4! Your function executed successfully!",
-      url: event.queryStringParameters?.url,
-      res: data,
+      igUrl: event.queryStringParameters?.url,
+      imageUrl: imageSrc,
+      caption: caption,
     }),
   };
 };
