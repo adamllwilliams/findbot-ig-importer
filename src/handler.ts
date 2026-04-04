@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type, ThinkingLevel } from '@google/genai';
 
 exports.hello = async (event) => {
-  // SCRAPE
+  // scraper
   const res = await fetch(
     `https://api.apify.com/v2/acts/apify~instagram-post-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_TOKEN}`,
     {
@@ -23,7 +23,7 @@ exports.hello = async (event) => {
   const buffer = await imageRes.arrayBuffer();
   const base64 = Buffer.from(buffer).toString('base64');
 
-  // GEMINI
+  // gen-ai
   const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   const config = {
@@ -73,6 +73,7 @@ exports.hello = async (event) => {
     contents,
   });
 
+  // handler
   const eventData = JSON.parse(response.text);
 
   return {
