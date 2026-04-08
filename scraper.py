@@ -19,7 +19,7 @@ def main():
     shortcode = extract_shortcode(url)
 
     L = instaloader.Instaloader(sleep=False)
-    L.load_session_from_file("frogelectronics", "~/.config/instaloader/session-frogelectronics")
+    L.load_session_from_file("frogelectronics")
 
     post = instaloader.Post.from_shortcode(L.context, shortcode)
 
