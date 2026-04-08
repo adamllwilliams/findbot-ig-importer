@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant Client
+    participant Lambda
+    participant Apify
+    participant CDN as IG CDN
+    participant Gemini as Google Gemini
+
+    Client->>Lambda: GET ?url=
+    Lambda->>Apify: Scrape post
+    Apify-->>Lambda: displayUrl + caption
+    Lambda->>CDN: Fetch image
+    CDN-->>Lambda: image bytes
+    Lambda->>Gemini: Extract event data
+    Gemini-->>Lambda: EventData
+    Lambda-->>Client: EventData JSON
