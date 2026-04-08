@@ -1,5 +1,5 @@
 import json
-from scraper import scrape_post
+from src.scraper import scrape_post
 
 
 def import_post(event):
