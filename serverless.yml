@@ -1,24 +1,43 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
 org: adamllwilliams
 # "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: findbot-ig-importer
+app: findbot-ig-importer-py
 # "service" is the name of this project. This will also be added to your AWS resource names.
-service: findbot-ig-importer
+service: findbot-ig-importer-py
 
 provider:
   name: aws
-  runtime: nodejs24.x
+  runtime: python3.12
   region: eu-west-2
   environment:
-    APIFY_TOKEN: ${env:APIFY_TOKEN}
     GEMINI_API_KEY: ${env:GEMINI_API_KEY}
+    SESSION_BUCKET: !Ref SessionBucket
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+          Resource: !Sub "${SessionBucket.Arn}/*"
   # Uncomment to easily set up a custom domain. Read the docs for more details:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
 
 functions:
   handler:
-    handler: src/handler.importPost
+    handler: src/handler.import_post
     timeout: 60
     url:
       authorizer: 'aws_iam'
+
+resources:
+  Resources:
+    SessionBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: findbot-ig-importer-py-sessions-${sls:stage}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
