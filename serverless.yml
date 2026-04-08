@@ -23,6 +23,9 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
 
+plugins:
+  - serverless-python-requirements
+
 functions:
   handler:
     handler: src/handler.import_post
