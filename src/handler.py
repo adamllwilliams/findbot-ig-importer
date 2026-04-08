@@ -2,7 +2,7 @@ import json
 from src.scraper import scrape_post
 
 
-def import_post(event):
+def import_post(event, context):
     try:
         params = event.get("queryStringParameters") or {}
         url = params.get("url")
