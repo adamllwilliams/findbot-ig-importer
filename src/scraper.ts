@@ -5,8 +5,9 @@ export async function scrapePost(url: string): Promise<ScraperResult> {
   const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
 
   const run = await client.actor('apify/instagram-post-scraper').call({
-    directUrls: [url],
+    username: [url],
     resultsLimit: 1,
+    dataDetailLevel: "basicData",
   });
 
   const { items } = await client.dataset(run.defaultDatasetId).listItems();
