@@ -1,4 +1,4 @@
-import { GoogleGenAI, ThinkingLevel, GenerateContentConfig, Content, GenerateContentResponse, Part } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel, GenerateContentConfig, Content, GenerateContentResponse, Part, MediaResolution } from '@google/genai';
 import { geminiResponseSchema } from './gemini-response-schema';
 import { EventData, EventDataSchema } from './types';
 
@@ -11,10 +11,13 @@ export async function extractEventData(imageBase64: string, caption: string): Pr
     },
     responseMimeType: 'application/json',
     responseSchema: geminiResponseSchema,
+    mediaResolution: MediaResolution.MEDIA_RESOLUTION_MEDIUM,
   };
   const model: string = 'gemini-3.1-flash-lite-preview';
   let parts: Part[] = [
-    { text: `Extract event details from this IG post.\n\nCaption: ${caption}` },
+    {
+      text: `This is an IG post promoting an event. Extract structured event details from the image and caption below. Use UK local time for all datetimes. Omit fields not explicitly stated.\n\n--- IG CAPTION ---\n${caption}\n--- END IG CAPTION ---`,
+    },
   ]
 
   if (imageBase64) {
