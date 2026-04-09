@@ -32,6 +32,7 @@ def extract_event_data(image_url: str, caption: str) -> dict:
             "response_mime_type": "application/json",
             "response_schema": gemini_response_schema,
             "thinking_config": {"thinking_budget": 0},
+            "mediaResolution": "MEDIA_RESOLUTION_MEDIUM",
         },
     }
 
