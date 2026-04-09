@@ -1,0 +1,13 @@
+graph TD
+    Client["Client"]
+    Lambda["AWS Lambda\n(Python 3.12)"]
+    S3["S3 Bucket\nInstaloader Session"]
+    Instagram["Instagram CDN"]
+    Gemini["Google Gemini\ngemini-3.1-flash-lite-preview"]
+
+    Client -->|"GET ?url="| Lambda
+    Lambda -->|"Download session"| S3
+    Lambda -->|"Scrape post + fetch image"| Instagram
+    Lambda -->|"imageBase64 + caption"| Gemini
+    Gemini -->|"EventData JSON"| Lambda
+    Lambda -->|"EventData + _timing"| Client

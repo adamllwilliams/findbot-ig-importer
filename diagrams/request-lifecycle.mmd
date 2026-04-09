@@ -1,15 +1,17 @@
 sequenceDiagram
     participant Client
     participant Lambda
-    participant Apify
-    participant CDN as Instagram CDN
+    participant S3
+    participant Instagram as Instagram CDN
     participant Gemini as Google Gemini
 
     Client->>Lambda: GET ?url=
-    Lambda->>Apify: Scrape post
-    Apify-->>Lambda: displayUrl + caption
-    Lambda->>CDN: Fetch image
-    CDN-->>Lambda: image bytes
-    Lambda->>Gemini: Extract event data
-    Gemini-->>Lambda: EventData
-    Lambda-->>Client: EventData JSON
+    Lambda->>S3: Fetch session (if not cached)
+    S3-->>Lambda: Session file
+    Lambda->>Instagram: Scrape post (Instaloader)
+    Instagram-->>Lambda: imageUrl + caption
+    Lambda->>Instagram: Fetch image bytes
+    Instagram-->>Lambda: image bytes
+    Lambda->>Gemini: imageBase64 + caption
+    Gemini-->>Lambda: EventData JSON
+    Lambda-->>Client: EventData JSON + _timing
