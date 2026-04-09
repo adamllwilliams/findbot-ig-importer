@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.48.0",
+    "apify-client": "^2.22.3",
     "zod": "^4.3.6"
   }
 }

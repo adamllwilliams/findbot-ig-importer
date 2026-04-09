@@ -1,25 +1,17 @@
+import { ApifyClient } from 'apify-client';
 import { ScraperResult, ApifyResponseSchema } from './types';
 
 export async function scrapePost(url: string): Promise<ScraperResult> {
-  const apifyRes: Response = await fetch(
-    `https://api.apify.com/v2/acts/apify~instagram-post-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_TOKEN}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: [url],
-        resultsLimit: 1,
-        dataDetailLevel: 'basicData'
-      })
-    }
-  );
+  const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
 
-  if (!apifyRes.ok) {
-    throw new Error(`Apify request failed with status ${apifyRes.status}`);
-  }
+  const run = await client.actor('apify/instagram-post-scraper').call({
+    directUrls: [url],
+    resultsLimit: 1,
+  });
 
-  const items = ApifyResponseSchema.parse(await apifyRes.json());
-  const { displayUrl, caption } = items[0];
+  const { items } = await client.dataset(run.defaultDatasetId).listItems();
+  const parsedItems = ApifyResponseSchema.parse(items);
+  const { displayUrl, caption } = parsedItems[0];
 
   let imageBase64: string = '';
 
