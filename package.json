@@ -26,8 +26,6 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
-    "@google/genai": "^1.48.0",
-    "apify-client": "^2.22.3",
-    "proxy-agent": "^6.5.0"
+    "@google/genai": "^1.48.0"
   }
 }
