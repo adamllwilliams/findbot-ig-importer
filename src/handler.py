@@ -31,7 +31,7 @@ def import_post(event, context):
 
         return {
             "statusCode": 200,
-            "body": json.dumps({**event_data, "_timing": timing}),
+            "body": json.dumps({**event_data, "_timing": timing}, ensure_ascii=False),
         }
 
     except Exception as e:

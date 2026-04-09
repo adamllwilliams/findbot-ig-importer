@@ -4,11 +4,11 @@ gemini_response_schema = {
     "properties": {
         "title": {
             "type": "STRING",
-            "description": "Event title",
+            "description": "Event title.",
         },
         "description": {
             "type": "STRING",
-            "description": "Event description in 140 characters or less",
+            "description": "Event description in 140 characters or less.",
         },
         "start_datetime": {
             "type": "STRING",
