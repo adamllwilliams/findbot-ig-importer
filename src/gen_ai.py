@@ -10,7 +10,11 @@ GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini
 
 
 def extract_event_data(image_url: str, caption: str) -> dict:
-    image_data = base64.b64encode(requests.get(image_url, timeout=10).content).decode("utf-8")
+    parts = []
+
+    if image_url:
+        image_data = base64.b64encode(requests.get(image_url, timeout=10).content).decode("utf-8")
+        parts.append({"inline_data": {"mime_type": "image/jpeg", "data": image_data}})
 
     prompt = (
         "This is an Instagram post promoting an event. "
@@ -18,16 +22,10 @@ def extract_event_data(image_url: str, caption: str) -> dict:
         "Use UK local time for all datetimes. Omit fields not explicitly stated.\n\n"
         f"--- INSTAGRAM CAPTION ---\n{caption}\n--- END INSTAGRAM CAPTION ---"
     )
+    parts.append({"text": prompt})
 
     payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"inline_data": {"mime_type": "image/jpeg", "data": image_data}},
-                    {"text": prompt},
-                ]
-            }
-        ],
+        "contents": [{"parts": parts}],
         "generationConfig": {
             "response_mime_type": "application/json",
             "response_schema": gemini_response_schema,

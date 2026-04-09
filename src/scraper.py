@@ -28,7 +28,14 @@ def scrape_post(url: str) -> dict:
     L = instaloader.Instaloader(sleep=False)
     L.load_session_from_file(INSTAGRAM_USERNAME, filename=SESSION_PATH)
     post = instaloader.Post.from_shortcode(L.context, shortcode)
+
+    image_url = post.url or ""
+    caption = post.caption or ""
+
+    if not image_url and not caption:
+        raise ValueError("No image or caption available for event extraction")
+
     return {
-        "imageUrl": post.url,
-        "caption": post.caption or "",
+        "imageUrl": image_url,
+        "caption": caption,
     }
