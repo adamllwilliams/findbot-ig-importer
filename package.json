@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.48.0",
-    "apify-client": "^2.22.3"
+    "apify-client": "^2.22.3",
+    "proxy-agent": "^8.0.1"
   }
 }
