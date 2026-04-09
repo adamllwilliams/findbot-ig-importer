@@ -16,6 +16,11 @@ provider:
   # https://www.serverless.com/framework/docs/providers/aws/guide/domains
   # domain: api.example.com
 
+build:
+  esbuild:
+    external:
+      - proxy-agent
+
 functions:
   handler:
     handler: src/handler.importPost
