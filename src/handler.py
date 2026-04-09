@@ -25,7 +25,7 @@ def import_post(event, context):
 
         t = time.perf_counter()
         event_data = extract_event_data(scraped["imageUrl"], scraped["caption"])
-        timing["gemini_ms"] = round((time.perf_counter() - t) * 1000)
+        timing["gen_ai_ms"] = round((time.perf_counter() - t) * 1000)
 
         timing["total_ms"] = round((time.perf_counter() - t_start) * 1000)
 
