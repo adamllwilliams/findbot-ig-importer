@@ -24,7 +24,9 @@ provider:
   # domain: api.example.com
 
 custom:
-  pythonRequirements: {}
+  pythonRequirements:
+    slim: true
+    dockerizePip: true
 
 functions:
   handler:
