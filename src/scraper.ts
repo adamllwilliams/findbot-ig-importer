@@ -2,7 +2,7 @@ import { ScraperResult, ApifyResponseSchema } from './types';
 
 export async function scrapePost(url: string): Promise<ScraperResult> {
   const apifyRes: Response = await fetch(
-    `https://api.apify.com/v2/acts/apify~ig-post-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_TOKEN}`,
+    `https://api.apify.com/v2/acts/apify~instagram-post-scraper/run-sync-get-dataset-items?token=${process.env.APIFY_TOKEN}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
