@@ -1,5 +1,5 @@
 import { ApifyClient } from 'apify-client';
-import { ScraperResult, ApifyResponseSchema } from './types';
+import { ScraperResult, ApifyItem } from './types';
 
 export async function scrapePost(url: string): Promise<ScraperResult> {
   const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
@@ -10,8 +10,7 @@ export async function scrapePost(url: string): Promise<ScraperResult> {
   });
 
   const { items } = await client.dataset(run.defaultDatasetId).listItems();
-  const parsedItems = ApifyResponseSchema.parse(items);
-  const { displayUrl, caption } = parsedItems[0];
+  const { displayUrl, caption } = items[0] as unknown as ApifyItem;
 
   let imageBase64: string = '';
 

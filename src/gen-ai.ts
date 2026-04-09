@@ -1,6 +1,6 @@
 import { GoogleGenAI, ThinkingLevel, GenerateContentConfig, Content, GenerateContentResponse, Part, MediaResolution } from '@google/genai';
 import { geminiResponseSchema } from './gemini-response-schema';
-import { EventData, EventDataSchema } from './types';
+import { EventData } from './types';
 
 export async function extractEventData(imageBase64: string, caption: string): Promise<EventData> {
   const genAI: GoogleGenAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -35,5 +35,5 @@ export async function extractEventData(imageBase64: string, caption: string): Pr
     contents,
   });
 
-  return EventDataSchema.parse(JSON.parse(response.text ?? ''));
+  return JSON.parse(response.text ?? '') as EventData;
 }

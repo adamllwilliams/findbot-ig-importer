@@ -1,5 +1,4 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { ZodError } from 'zod';
 import { scrapePost } from './scraper';
 import { extractEventData } from './gen-ai';
 import { EventData } from './types';
@@ -28,9 +27,7 @@ export const importPost = async (event: APIGatewayProxyEventV2): Promise<APIGate
   } catch (error) {
     let errorMessage;
 
-    if (error instanceof ZodError) {
-      errorMessage = error.issues;
-    } else if (error instanceof Error) {
+    if (error instanceof Error) {
       errorMessage = error.message;
     } else {
       errorMessage = 'An unexpected error occurred';
