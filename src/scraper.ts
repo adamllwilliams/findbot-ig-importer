@@ -10,6 +10,11 @@ export async function scrapePost(url: string): Promise<ScraperResult> {
   });
 
   const { items } = await client.dataset(run.defaultDatasetId).listItems();
+
+  if (items.length === 0) {
+    throw new Error('No results returned from Apify');
+  }
+
   const { displayUrl, caption } = items[0] as unknown as ApifyItem;
 
   let imageBase64: string = '';

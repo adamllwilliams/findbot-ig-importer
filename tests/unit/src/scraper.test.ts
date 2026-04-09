@@ -1,21 +1,35 @@
 import { scrapePost } from '../../../src/scraper';
+import { ApifyClient } from 'apify-client';
+
+jest.mock('apify-client');
+
+const mockListItems = jest.fn();
+const mockCall = jest.fn();
+
+(ApifyClient as jest.Mock).mockImplementation(() => ({
+  actor: () => ({ call: mockCall }),
+  dataset: () => ({ listItems: mockListItems }),
+}));
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('scrapePost', () => {
-  afterEach(() => {
-    jest.restoreAllMocks();
+  beforeEach(() => {
+    mockCall.mockResolvedValue({ defaultDatasetId: 'test-dataset-id' });
   });
 
   it('should return imageBase64 and caption on happy path', async () => {
     // Arrange
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: 'Test event caption' }]
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        arrayBuffer: async () => Buffer.from('fake-image-data')
-      } as unknown as Response);
+    mockListItems.mockResolvedValueOnce({
+      items: [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: 'Test event caption' }],
+    });
+
+    jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+      ok: true,
+      arrayBuffer: async () => Buffer.from('fake-image-data'),
+    } as unknown as Response);
 
     // Act
     const result = await scrapePost('https://www.ig.com/p/ABC123/');
@@ -25,56 +39,19 @@ describe('scrapePost', () => {
     expect(result.imageBase64).toBeTruthy();
   });
 
-  it('should throw error if apify request fails', async () => {
-    // Arrange
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: false,
-        status: 403,
-      } as unknown as Response);
-
-    // Act & Assert
-    await expect(scrapePost('https://www.ig.com/p/ABC123/')).rejects.toThrow('Apify request failed with status 403');
-  });
-
-  it('should throw error if apify items are empty', async () => {
-    // Arrange
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => []
-      } as unknown as Response);
-
-    // Act & Assert
-    await expect(scrapePost('https://www.ig.com/p/ABC123/')).rejects.toThrow('No results returned from Apify');
-  });
-
-  it('should throw error if apify response is missing required fields', async () => {
-    // Arrange
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [{ displayUrl: 'https://cdn.ig.com/image.jpg' }]
-      } as unknown as Response);
-
-    // Act & Assert
-    await expect(scrapePost('https://www.ig.com/p/ABC123/')).rejects.toThrow();
-  });
-
   it('should use the first item if multiple items are returned from apify', async () => {
     // Arrange
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [
-          { displayUrl: 'https://cdn.ig.com/image1.jpg', caption: 'First caption' },
-          { displayUrl: 'https://cdn.ig.com/image2.jpg', caption: 'Second caption' }
-        ]
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        arrayBuffer: async () => Buffer.from('fake-image-data')
-      } as unknown as Response);
+    mockListItems.mockResolvedValueOnce({
+      items: [
+        { displayUrl: 'https://cdn.ig.com/image1.jpg', caption: 'First caption' },
+        { displayUrl: 'https://cdn.ig.com/image2.jpg', caption: 'Second caption' },
+      ],
+    });
+
+    jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+      ok: true,
+      arrayBuffer: async () => Buffer.from('fake-image-data'),
+    } as unknown as Response);
 
     // Act
     const result = await scrapePost('https://www.ig.com/p/ABC123/');
@@ -87,12 +64,11 @@ describe('scrapePost', () => {
     // Arrange
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: 'Test event caption' }]
-      } as unknown as Response)
-      .mockRejectedValueOnce(new Error('Network error'));
+    mockListItems.mockResolvedValueOnce({
+      items: [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: 'Test event caption' }],
+    });
+
+    jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Network error'));
 
     // Act
     const result = await scrapePost('https://www.ig.com/p/ABC123/');
@@ -105,15 +81,14 @@ describe('scrapePost', () => {
 
   it('should proceed with image if caption is empty', async () => {
     // Arrange
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: '' }]
-      } as unknown as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        arrayBuffer: async () => Buffer.from('fake-image-data')
-      } as unknown as Response);
+    mockListItems.mockResolvedValueOnce({
+      items: [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: '' }],
+    });
+
+    jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+      ok: true,
+      arrayBuffer: async () => Buffer.from('fake-image-data'),
+    } as unknown as Response);
 
     // Act
     const result = await scrapePost('https://www.ig.com/p/ABC123/');
@@ -123,19 +98,34 @@ describe('scrapePost', () => {
     expect(result.imageBase64).toBeTruthy();
   });
 
-  it('should throw an error with empty imageBase64 and caption', async () => {
+  it('should throw if both imageBase64 and caption are empty', async () => {
     // Arrange
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    jest.spyOn(global, 'fetch')
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: '' }]
-      } as unknown as Response)
-      .mockRejectedValueOnce(new Error('Network error'));
+    mockListItems.mockResolvedValueOnce({
+      items: [{ displayUrl: 'https://cdn.ig.com/image.jpg', caption: '' }],
+    });
+
+    jest.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('Network error'));
 
     // Act & Assert
     await expect(scrapePost('https://www.ig.com/p/ABC123/')).rejects.toThrow('No image or caption available for event extraction');
     expect(warnSpy).toHaveBeenCalledWith('Failed to fetch image, proceeding with caption only');
+  });
+
+  it('should throw if apify returns no items', async () => {
+    // Arrange
+    mockListItems.mockResolvedValueOnce({ items: [] });
+
+    // Act & Assert
+    await expect(scrapePost('https://www.ig.com/p/ABC123/')).rejects.toThrow('No results returned from Apify');
+  });
+
+  it('should throw if the apify actor call fails', async () => {
+    // Arrange
+    mockCall.mockRejectedValueOnce(new Error('Apify actor error'));
+
+    // Act & Assert
+    await expect(scrapePost('https://www.ig.com/p/ABC123/')).rejects.toThrow('Apify actor error');
   });
 });

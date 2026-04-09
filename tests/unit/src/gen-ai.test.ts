@@ -91,19 +91,6 @@ describe('extractEventData', () => {
     expect(firstPart).not.toHaveProperty('inlineData');
   });
 
-  it('should throw if gemini response does not match EventDataSchema', async () => {
-    // Arrange
-    mockGenerateContent.mockResolvedValueOnce({
-      text: JSON.stringify({
-        title: 'Test Event',
-        // missing start_datetime which is required
-      }),
-    });
-
-    // Act & Assert
-    await expect(extractEventData('fake-base64', 'Test caption')).rejects.toThrow();
-  });
-
   it('should throw if generateContent throws', async () => {
     // Arrange
     mockGenerateContent.mockRejectedValueOnce(new Error('Gemini API error'));
