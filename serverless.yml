@@ -18,6 +18,8 @@ provider:
 
 build:
   esbuild:
+    format: esm
+    outputFileExtension: .mjs
     external:
       - proxy-agent
 
